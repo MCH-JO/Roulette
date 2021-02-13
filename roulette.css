@@ -1,0 +1,69 @@
+@font-face {
+	font-family: 'Deftone';
+	src: url('polices/Deftone/DEFTONE.ttf');
+}
+
+@font-face {
+	font-family: 'Banksia';
+	src: url('polices/Banksia/banksb26.ttf');
+}
+
+h1 {
+	border-style: outset;
+	color: white;
+	text-shadow: 0.05em 0.05em red;
+	width: 20em;
+	border-color: white;
+	background-color: black;
+	padding: 0.5em;
+	margin-left: auto;
+	margin-right: auto;
+	
+}
+
+body {
+	
+
+	font-family: Banksia, "Comic Sans MS";
+	font-size: 2em;
+	text-shadow: 0.05em 0.05em grey;
+	text-align: center;
+	background: radial-gradient(hsl(0, 100%, 27%) 4%, hsl(0, 100%, 18%) 9%, hsla(0, 100%, 20%, 0) 9%) 0 0,
+		radial-gradient(hsl(0, 100%, 27%) 4%, hsl(0, 100%, 18%) 8%, hsla(0, 100%, 20%, 0) 10%) 50px 50px,
+		radial-gradient(hsla(0, 100%, 30%, 0.8) 20%, hsla(0, 100%, 20%, 0)) 50px 0,
+		radial-gradient(hsla(0, 100%, 30%, 0.8) 20%, hsla(0, 100%, 20%, 0)) 0 50px,
+		radial-gradient(hsla(0, 100%, 20%, 1) 35%, hsla(0, 100%, 20%, 0) 60%) 50px 0,
+		radial-gradient(hsla(0, 100%, 20%, 1) 35%, hsla(0, 100%, 20%, 0) 60%) 100px 50px,
+		radial-gradient(hsla(0, 100%, 15%, 0.7), hsla(0, 100%, 20%, 0)) 0 0,
+		radial-gradient(hsla(0, 100%, 15%, 0.7), hsla(0, 100%, 20%, 0)) 50px 50px,
+		linear-gradient(45deg, hsla(0, 100%, 20%, 0) 49%, hsla(0, 100%, 0%, 1) 50%, hsla(0, 100%, 20%, 0) 70%) 0 0,
+		linear-gradient(-45deg, hsla(0, 100%, 20%, 0) 49%, hsla(0, 100%, 0%, 1) 50%, hsla(0, 100%, 20%, 0) 70%) 0 0;
+	background-color: #300;
+	background-size: 100px 100px;
+	
+	 
+}
+div {
+	display: flex;
+	justify-content: space-around;
+}
+
+a {
+	font-size: 0.7em;
+	text-decoration: none;
+	color: black;
+	background-color: white;
+	border-width: 0.01em;
+	border-style: none;
+	border-radius: 0.5em;
+	/*box-shadow: 0.2em 0.2em grey;*/
+	padding: 0.2em;
+}
+
+.resultat {
+	text-shadow: 0.05em 0.05em white;
+}
+
+.jouer {
+	font-size: 1em;
+}
