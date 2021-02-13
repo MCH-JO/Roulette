@@ -1,42 +1,26 @@
 <?php
 
+	require_once('DBManager.php');														//on inclut le fichier
+	$objetBdd=new DbManager('127.0.0.1', 'bdd_roulette', 'p0401831', 'Lamborgh444');
+	
 	session_start();
 	//var_dump($_SESSION);			//pour debugger
 	//var_dump($_POST);				//"
 
-	try {
-		$bdd = new PDO('mysql:host=127.0.0.1; dbname=bdd_roulette; charset=utf8', 'p0401831', 'Lamborgh444');
-	} catch (Exception $e) {
-		die('Erreur: ' . $e->getMessage());
-	}
-
 	if (isset($_GET['Deco']))
 		unset($_SESSION['username']);
 	
-
-	$requete = 'select username from Player where username=:username';	
-	$req=$bdd -> prepare($requete);
-	$req -> execute(array('username' => $username));
-	$resultat = $req -> fetch();
-	$req -> closeCursor();
-
-
+	$resultat=$objetBdd -> getUsername($_POST['username']);		//on recupere ds la bdd le login du joueur
 		
 	if (isset($_POST['creer'])) {
 		if(isset($_POST['username']) && $_POST['username'] != '') {
 			if(isset($_POST['password']) && isset($_POST['password2']) && $_POST['password'] != '' && $_POST['password2'] != '') {
 				if ($_POST['password'] == $_POST['password2']) {
-					if ((strcmp($_POST['username'], $resultat['username'])==0) || (strcmp($_SESSION['username'], $resultat['username'])==0)) {		//on regarde si le nom proposé existe deja ds la bdd
-						$requete1 = 'update Player set password=:password where username=:username';												//si oui (ou si le joueur est deja connecté), on MàJ le mdp
-						$req1 = $bdd -> prepare($requete1);
-						$req1 -> execute(array('password' => $_POST['password'], 'username' => $_POST['username']));
-						$req1 -> closeCursor();								
+					if ((strcmp($_POST['username'], $resultat)==0) || (strcmp($_SESSION['username'], $resultat)==0)) {		//on regarde si le nom proposé existe deja ds la bdd
+						$objetBdd -> updInscription($_POST['username'], $_POST['password']);								//si oui (ou si le joueur est deja connecté), on MàJ le mdp
 						$_SESSION['username'] = $_POST['username'];
 					} else {
-						$requete2 = 'insert into Player (username, password, money) values (?, ?, ?)';
-						$req2 = $bdd -> prepare($requete2);
-						//ou $requete=$bdd->prepare('insert into Player (username, password, money) values (:t_username, :t_password, 2000)');
-						$req2 -> execute(array($_POST['username'], $_POST['password'], 2000));														//sinon on crée un nouveau compte
+						$objetBdd -> inscription($_POST['username'], $_POST['password'], 2000);								//sinon on crée un nouveau compte
 						$_SESSION['username'] = $_POST['username'];
 					}
 					echo "Compte enregistré ou mis à jour<br>";

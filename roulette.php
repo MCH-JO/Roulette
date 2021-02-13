@@ -1,14 +1,10 @@
 <?php
 	
+	require_once('DBManager.php');
+	$objetBdd= new DbManager('127.0.0.1', 'bdd_roulette', 'p0401831', 'Lamborgh444');
+	
 	session_start();
-	//var_dump($_SESSION);			//pour debugger
-	//var_dump($_POST);				//"
-
-	try {
-		$bdd = new PDO('mysql:host=127.0.0.1; dbname=bdd_roulette; charset=utf8', 'p0401831', 'Lamborgh444');
-	} catch (Exception $e) {
-		die('Erreur: ' . $e->getMessage());
-	}
+	//var_dump($_POST);  	//pour debugger
 
 	if (!isset($_SESSION['username']))
 		header('Location: index.php');
@@ -18,13 +14,7 @@
 	echo ', nous allons jouer à un jeu...<br>';
 	$gain=0;															//gain eventuel en fonction de la selection du joueur
 	$resultat='vide';												//phrase à afficher pour indiquer au joueur s'il a gagné ou pas
-		
-		$requete = 'select money from Player where username=:username';	
-		$req = $bdd -> prepare($requete);
-		$req -> execute(array('username' => $_SESSION['username']));
-		$money = $req -> fetch();
-		$req -> closeCursor();
-	$porte_monnaie=$money['money'];						//on interroge la bdd afin de savoir de combien le joueur dispose
+	$porte_monnaie=$objetBdd->getMoney($_SESSION['username']);			//on interroge la bdd afin de savoir de combien le joueur dispose
 	$date=date("y-m-d-H-i-s");
 	$nb=rand(1, 36);												//nb géneré de manière aleatoire; nb à trouver
 	$parite='vide';
@@ -35,9 +25,9 @@
 	//Jeu de la roulette
 	echo "$nb<br>";		//pr debugger
 	echo "Choisisez une mise, puis un nombre ou la parité:<br>";
-	echo 'Votre porte-monnaie: ' . $porte_monnaie . " €<br>";
+	echo 'Votre porte-monnaie: ' . $porte_monnaie['money'] . " €<br>";
 	if (isset($_POST['envoyer'])) {
-		if ($porte_monnaie >= $_POST['mise']) {		//on verifie le solde du joueur
+		if ($porte_monnaie['money'] >= $_POST['mise']) {		//on verifie le solde du joueur
 			if (isset($_POST['mise']) && ($_POST['mise'] >= 10)) {			//le joueur saisi une mise
 				if (isset($_POST['choix']) && (!isset($_POST['choix_p']))) {
 					if ($_POST['choix'] <= 36 && $_POST['choix'] >= 1) {
@@ -51,7 +41,7 @@
 						$gain = $_POST['mise'] * 2;
 						$resultat="Gagné!! $nb est $parite!!";
 					} else $resultat="Perdu: parite incorrecte, ben oui $nb est $parite";
-				} elseif (isset($_POST['choix']) && isset($_POST['choix_p'])) {		//cas du mauvais utilisateur qui
+				} elseif (isset($_POST['choix']) && isset($_POST['choix_p'])) {		//cas du mauvais utilisateur qui saisi
 						unset($_POST['choix_p']);									//saisit une valeur et une parité
 						if ($_POST['choix']==$_POST['NB']) {
 							$resultat='Jackpot!! Vous avez choisi le numero ' . $_POST['choix'] . ' et c est bien lui qui est sorti!!';
@@ -63,7 +53,7 @@
 					$resultat='Misez! (ou somme insuffisante)';
 					$gain=0;
 				}
-			$porte_monnaie=$porte_monnaie - $_POST['mise'] + $gain;		//total du porte-monnaie du joueur
+			$porte_monnaie['money']=$porte_monnaie['money'] - $_POST['mise'] + $gain;	//total du porte-monnaie du joueur
 		} else 
 			{
 				echo 'Solde insuffisant!! ';
@@ -71,25 +61,9 @@
 			}	
 	}
 	
-		$req1 = $bdd -> prepare('select id from Player where username=:username');		//on recupere l'id du joueur ds la bdd
-		$req1 -> execute(array(
-			'username' => $_SESSION['username']
-			));
-		$id = $req1 -> fetch();
-		$req1 -> closeCursor();
-		
-		$req2 = $bdd -> prepare('update Player set money=:money where username=:username');		//on met à jour le porte-monnaie du joueur (table player)
-		$req2-> execute(array('money' => $porte_monnaie,'username' => $_SESSION['username']));
-		$req2-> closeCursor();
-		
-		$req3 = $bdd -> prepare('insert into Game (player, date, bet, profit) values (:player, :date, :bet, :profit)');		//on incremente la nvelle partie jouée ds la bdd
-		$req3 -> execute(array(
-			'player' => $id['id'],
-			'date' => $date,
-			'bet' => $_POST['mise'],
-			'profit' => $gain
-			));
-		$req3 -> closeCursor();
+	$id=$objetBdd->getId($_SESSION['username']);							//on recupere l'id du joueur
+	$objetBdd->setMoney($_SESSION['username'], $porte_monnaie['money']);		//on met à jour le porte-monnaie du joueur
+	$objetBdd->setNewGame($id['id'], $date, $_POST['mise'], $gain);			//on incremente chaque partie dans la bdd
 		
 		
 /*htmlspecialschars($_POST['']);
