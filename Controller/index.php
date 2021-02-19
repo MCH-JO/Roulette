@@ -51,7 +51,7 @@
 	}
 
 	//traitement formulaire de connection
-	$reponse=$dao_p->connection($_POST['username']);		//on recupere login + mdp ds la base afin de comparer avec ce qu'a saisi l'utilisateur
+	$reponse=$dao_p->connection($_POST['username']);							//recupere login + mdp ds la base afin de comparer avec ce qu'a saisi l'utilisateur
 	if (isset($_POST['connecter'])) {
 		if(isset($_POST['username']) && $_POST['username'] != '' && isset($_POST['password']) && $_POST['password'] != '') {
 			if ($_POST['username'] ==  $reponse['username'] && $_POST['password'] == $reponse['password']) {
@@ -94,13 +94,13 @@
 							$gain= $_POST['mise'] * 35;
 						} else $message2='Perdu, vous avez choisi le numero ' . $_POST['choix'] . ' alors que c est le numero ' . $nb . ' qui est sorti';
 					} else $message2='La valeur choisie n est pas ds la tolerance, choisissez un nombre entre 1 et 36';
-				} elseif (isset($_POST['choix_p']) && $_POST['choix']==0) { 			//le joueur saisit une parité
+				} elseif (isset($_POST['choix_p']) && $_POST['choix']==0) { 	//le joueur saisit une parité
 					if ($_POST['choix_p']==$_POST['PARITE']) {
 						$gain = $_POST['mise'] * 2;
 						$message2='Gagné!! ' . $nb . ' est ' . $parite;
 					} else $message2='Perdu: parite incorrecte, ben oui ' . $nb . ' est ' . $parite;
-				} elseif ($_POST['choix']!=0 && isset($_POST['choix_p'])) {				//cas du mauvais utilisateur qui...
-						unset($_POST['choix_p']);										//...saisit une valeur et une parité => parité non prise en compte
+				} elseif ($_POST['choix']!=0 && isset($_POST['choix_p'])) {		//cas du mauvais utilisateur qui...
+						unset($_POST['choix_p']);								//...saisit une valeur et une parité => parité non prise en compte
 						if ($_POST['choix']==$_POST['NB']) {
 							$message2='Jackpot!! Vous avez choisi le numero ' . $_POST['choix'] . ' et c est bien lui qui est sorti!!';
 							$gain = $_POST['mise'] * 35;
@@ -111,13 +111,13 @@
 					$message2='Misez! (ou somme insuffisante)';
 					$gain=0;
 				}
-			$porte_monnaie=$porte_monnaie - $_POST['mise'] + $gain;						//porte-monnaie du joueur  + gains - mise
-			$dao_g->setNewGame($id, $date, $_POST['mise'], $gain);						//partie incrémentée dans la bdd
-			$dao_p->setMoney($username, $porte_monnaie);								//porte-monnaie du joueur mis à jour
+			$porte_monnaie=$porte_monnaie - $_POST['mise'] + $gain;				//porte-monnaie du joueur  + gains - mise
+			$dao_g->setNewGame($id, $date, $_POST['mise'], $gain);				//partie incrémentée dans la bdd
+			$dao_p->setMoney($username, $porte_monnaie);						//porte-monnaie du joueur mis à jour
 		} else
 			{
 				$message2= 'Solde insuffisant!! ';
-				$module='../View/roulette.php';											//cliquer sur "envoyer" renverra sur la page d'accueil du jeu (=>partie non prise en compte)
+				$module='../View/roulette.php';									//cliquer sur "envoyer" renverra sur la page d'accueil du jeu (=>partie non prise en compte)
 			}
 	}
 
